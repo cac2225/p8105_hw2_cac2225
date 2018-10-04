@@ -4,3 +4,12 @@ author: "Courtney Chan"
 date: "October 4, 2018"
 output: github_document
 ---
+#Problem 1 NYC Transit Data
+
+First step is to save the relevant dataset is saved to the data subdirectory folder. The tidyverse package is loaded. The data is loaded using a relative path to the subdirectory, with the function readr, and given a name
+
+```{r loading library tidyverse}
+library(tidyverse)
+nyc_subway_data = read_csv(file = "./subdirectory_HW2data/NYC_Transit_Subway_Entrance_And_Exist_Data.csv")
+```
+Read and clean the data; retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Convert the entry variable from character (YES vs NO) to a logical variable (the ifelse or  recode function may be useful).
