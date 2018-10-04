@@ -39,4 +39,8 @@ It seems that dataset appears to have all necessary column names, so moving onto
 select(nyc_subway_data, line, station_name, station_latitude, station_longitude, route1:route11, entry, vending, entrance_type, ada)
 ```
 
-Convert the entry variable from character (YES vs NO) to a logical variable (the ifelse or  recode function may be useful).
+To recode the variable entry using the function if else.
+
+```{r convert entry variable}
+nyc_subway_data = mutate(nyc_subway_data, entry = ifelse(entry == "yes", "True", "False"))
+```
