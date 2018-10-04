@@ -22,4 +22,21 @@ names(nyc_subway_data)
 nyc_subway_data = janitor::clean_names(nyc_subway_data)
 names(nyc_subway_data)
 ```
-Read and clean the data; retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Convert the entry variable from character (YES vs NO) to a logical variable (the ifelse or  recode function may be useful).
+
+Preliminarily viewing dataset, the first few rows, last few rows, summary statistics which provide a general overview of whether there is missing column names, data etc.
+
+```{r looking at data}
+nyc_subway_data
+
+tail(nyc_subway_data, 5)
+
+skimr::skim(nyc_subway_data)
+```
+
+It seems that dataset appears to have all necessary column names, so moving onto the next step of selecting certain columns.
+
+```{r selecting certain columns}
+select(nyc_subway_data, line, station_name, station_latitude, station_longitude, route1:route11, entry, vending, entrance_type, ada)
+```
+
+Convert the entry variable from character (YES vs NO) to a logical variable (the ifelse or  recode function may be useful).
