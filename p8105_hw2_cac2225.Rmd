@@ -6,10 +6,20 @@ output: github_document
 ---
 #Problem 1 NYC Transit Data
 
-First step is to save the relevant dataset is saved to the data subdirectory folder. The tidyverse package is loaded. The data is loaded using a relative path to the subdirectory, with the function readr, and given a name
+First step is to save the relevant dataset to the data subdirectory folder, under the working directory. The tidyverse package is loaded. The data is loaded using a relative path to the subdirectory, with the function readr, and given a name, "nyc_subway_data".
 
 ```{r loading library tidyverse}
 library(tidyverse)
-nyc_subway_data = read_csv(file = "./subdirectory_HW2data/NYC_Transit_Subway_Entrance_And_Exist_Data.csv")
+
+nyc_subway_data = read_csv(file = "./subdirectory_HW2data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv")
+```
+
+Names of the columns are cleaned using janitor::clean_names, converting names to lower snake case.
+
+```{r data cleaning - clean column names}
+names(nyc_subway_data)
+
+nyc_subway_data = janitor::clean_names(nyc_subway_data)
+names(nyc_subway_data)
 ```
 Read and clean the data; retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Convert the entry variable from character (YES vs NO) to a logical variable (the ifelse or  recode function may be useful).
