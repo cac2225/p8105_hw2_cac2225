@@ -1,0 +1,6 @@
+---
+title: "p8105_hw2_cac2225"
+author: "Courtney Chan"
+date: "October 4, 2018"
+output: github_document
+---
