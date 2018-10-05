@@ -148,37 +148,45 @@ The median number of sports balls in a dumpster in 2016 was `r median(trash_data
 #Problem 3
 
 ```{r loading the data}
+install.packages("devtools")
+devtools::install_github("p8105/p8105.datasets")
+
+library(p8105.datasets)
+data(brfss_smart2010)
+
+library(dplyr)
 library(tidyverse)
-library(httr)
-library(jsonlite)
 
-var_names = GET("https://chronicdata.cdc.gov/views/acme-vg9e.json") %>%
-  content("text") %>%
-  fromJSON() %>% 
-  .[["columns"]] %>% 
-  .[["name"]] %>% 
-  .[-23]
-
-brfss_smart2010 = 
-  GET("https://chronicdata.cdc.gov/views/acme-vg9e/rows.json") %>% 
-  content("text") %>%
-  fromJSON() %>% 
-  .[["data"]]
-
-row_as_tibble = function(row_as_list, var_names) {
-  var_list = row_as_list[9:30]
-  names(var_list) = var_names 
-  var_list[sapply(var_list, is.null)] <- NULL
-  as_tibble(var_list, validate = FALSE)
-}
-
-brfss_smart2010 = 
-  brfss_smart2010 %>% 
-  map(.x = ., ~row_as_tibble(.x, var_names)) %>% 
-  bind_rows
 ```
 
-```{r formatting the data}
-brfss_smart2010 = janitor::clean_names(brfss_smart2010) %>% 
+```{r clean and format the data}
+brfss_smart2010_clean = janitor::clean_names(brfss_smart2010) %>% 
   filter(topic == "Overall Health")
+
+brfss_smart2010_clean = select(brfss_smart2010_clean, year, locationabbr, locationdesc, response, data_value) %>% spread(key = response, value = data_value) %>% mutate(proportion = Excellent/Good)
 ```
+
+```{rr finding distinct stations}
+distinct(brfss_smart2010_clean, locationdesc)
+length(unique(brfss_smart2010_clean$locationabbr))
+tail(names(sort(table(brfss_smart2010_clean$locationabbr))),1)
+
+brfss_smart2010_clean
+
+
+precip_2016_2017 = 
+  filter(___, state = (factor(state, levels = 1:50, labels = state.name)))
+match
+mode(state)
+median(exellent)
+```
+
+```{r filter and plots}
+
+
+ggplot(brfss_smart2010_clean, aes(x = year, y = Excellent)) + geom_histogram()
+
+ggplot(weather_df, aes(x = year, y = excellent)) + 
+  geom_point()
+```
+
