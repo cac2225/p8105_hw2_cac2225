@@ -154,8 +154,8 @@ The median number of sports balls in a dumpster in 2016 was `r median(trash_data
 Load the data from the source.
 ```{r loading the data}
 
-install.packages("devtools")
-devtools::install_github("p8105/p8105.datasets")
+#install.packages("devtools")
+#devtools::install_github("p8105/p8105.datasets")
 
 library(p8105.datasets)
 data(brfss_smart2010)
