@@ -144,3 +144,40 @@ Key variables of the Mr. Trashy Wheel data set would be year, date and weight_to
 Key variables of the final precip_2016_2017 dataset would be year and precipitation since it's important to pinpoint when the most precipitation occurred.
 The total precipitation in 2017 was `r sum(precip_2016_2017$total)`.
 The median number of sports balls in a dumpster in 2016 was `r median(trash_data$sports_balls)`.
+
+#Problem 3
+
+```{r loading the data}
+library(tidyverse)
+library(httr)
+library(jsonlite)
+
+var_names = GET("https://chronicdata.cdc.gov/views/acme-vg9e.json") %>%
+  content("text") %>%
+  fromJSON() %>% 
+  .[["columns"]] %>% 
+  .[["name"]] %>% 
+  .[-23]
+
+brfss_smart2010 = 
+  GET("https://chronicdata.cdc.gov/views/acme-vg9e/rows.json") %>% 
+  content("text") %>%
+  fromJSON() %>% 
+  .[["data"]]
+
+row_as_tibble = function(row_as_list, var_names) {
+  var_list = row_as_list[9:30]
+  names(var_list) = var_names 
+  var_list[sapply(var_list, is.null)] <- NULL
+  as_tibble(var_list, validate = FALSE)
+}
+
+brfss_smart2010 = 
+  brfss_smart2010 %>% 
+  map(.x = ., ~row_as_tibble(.x, var_names)) %>% 
+  bind_rows
+```
+
+```{r formatting the data}
+
+```
