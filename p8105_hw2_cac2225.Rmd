@@ -101,5 +101,5 @@ To load xlsx data, the library package readxl must be loaded. Then read_excel fu
 ```{r Loading Trash Wheel dataset}
 library(readxl)
 
-trash_data = read_excel(file = "./subdirectory_HW2data/HealthyHarborWaterWheelTotals2018-7-28")
+trash_data = read_excel("./subdirectory_HW2data/HealthyHarborWaterWheelTotals2018-7-28.xlsx")
 ```
