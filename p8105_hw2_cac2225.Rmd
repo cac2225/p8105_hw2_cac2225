@@ -10,6 +10,7 @@ First step is to save the relevant dataset to the data subdirectory folder, unde
 
 ```{r loading library tidyverse}
 library(tidyverse)
+library(dplyr)
 
 nyc_subway_data = read_csv(file = "./subdirectory_HW2data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv")
 ```
@@ -39,8 +40,39 @@ It seems that dataset appears to have all necessary column names, so moving onto
 select(nyc_subway_data, line, station_name, station_latitude, station_longitude, route1:route11, entry, vending, entrance_type, ada)
 ```
 
-To recode the variable entry using the function if else.
+To recode the variable entry.
 
 ```{r convert entry variable}
-nyc_subway_data = mutate(nyc_subway_data, entry = ifelse(entry == "yes", "True", "False"))
+nyc_subway_data = mutate(nyc_subway_data, entry = ifelse(entry == "YES", "True", "False"))
 ```
+
+The dataset nyc_subway_data contains variables that describe the subway lines available in New York City, via whether the line was BMT/IND operated and its line catagorization, where its stations are located via latitude/longitude, street location, availability of entry and exit, ada compliant, availability of vending and staffing, and the names of the stations. My cleanupu steps involved cleaning the column names to lower snake case, ensuring that there were no column names missing, as well as a brief overview of the data. I selected certain columns to work with and recoded the variable "entry".
+
+The definition of tidy data involve column names being variables themselves, rows are observations and every value has its own cell. No, the data is not yet tidy, as each route number value has its own column. In order to make this data tidy, two columns should be made, one column for variable "route_number" and one column for a corresponding "route_train" for the trains that serve each route.
+
+To determine how many distinct stations there are, as defined by unique combinations of station name and line, use the distinct function.
+
+```{r finding distinct stations}
+distinct(nyc_subway_data, station_name, line)
+```
+
+Filtering by line and station_name, there are 465 distinct stations.
+
+```{r  distinct stations ADA compliant}
+filter(nyc_subway_data, ada == "TRUE") %>%
+  distinct(.data = ., station_name, line)
+```
+
+Of the distinct stations, 84 are ADA compliant.
+
+```{r number of stations without vending}
+filter(nyc_subway_data, vending == "NO")
+```
+183 stations do not have vending
+
+```{r number of stations with entrance}
+filter(nyc_subway_data, entry == "True", vending == "NO")
+```
+69 stations do not have vending and allow entrance. Thus 69/183 stations without vending allow entrance.
+
+
