@@ -11,6 +11,8 @@ First step is to save the relevant dataset to the data subdirectory folder, unde
 ```{r loading library tidyverse}
 library(tidyverse)
 library(dplyr)
+library(magrittr)
+library(ggplot2) 
 
 nyc_subway_data = read_csv(file = "./subdirectory_HW2data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv")
 ```
@@ -52,11 +54,11 @@ The definition of tidy data involve column names being variables themselves, row
 
 To determine how many distinct stations there are, as defined by unique combinations of station name and line, use the distinct function.
 
-```{r finding distinct stations}
+```{r finding distinct by station and line stations}
 distinct(nyc_subway_data, station_name, line)
 ```
 
-Filtering by line and station_name, there are 465 distinct stations.
+Filtering by line and station name, there are 465 distinct stations.
 
 ```{r  distinct stations ADA compliant}
 filter(nyc_subway_data, ada == "TRUE") %>%
@@ -66,33 +68,35 @@ filter(nyc_subway_data, ada == "TRUE") %>%
 Of the distinct stations, 84 are ADA compliant.
 
 ```{r number of stations without vending}
-filter(nyc_subway_data, vending == "NO")
+no_vending = filter(nyc_subway_data, vending == "NO")
 ```
 183 stations do not have vending
 
 ```{r number of stations with entrance}
-filter(nyc_subway_data, entry == "True", vending == "NO")
+no_vending_entrance = filter(nyc_subway_data, entry == "True", vending == "NO")
 ```
 69 stations do not have vending and allow entrance. Thus 69/183 stations without vending allow entrance.
 
 ```{r create route_name and route_number}
-tidy_nyc_subway_date = gather(nyc_subway_data, key = route_number, value = route_name, route1:route11)
+tidy_nyc_subway_data = gather(nyc_subway_data, key = route_number, value = route_name, route1:route11)
 ```
 
 Using gather route variables have been combined into route_number and route_name.
 
 ```{r distinct A stations}
-filter(tidy_nyc_subway_date, route_name == "A") %>% distinct(.data = ., station_name, line)
+filter(tidy_nyc_subway_data, route_name == "A") %>% distinct(.data = ., station_name, line)
 ```
 
 60 subway distinct subway stations serve the A train.
 
 ```{r distinct ADA A stations}
-filter(tidy_nyc_subway_date, route_name == "A", ada == "TRUE") %>% 
+filter(tidy_nyc_subway_data, route_name == "A", ada == "TRUE") %>% 
   distinct(.data = ., station_name, line)
 ```
 
 17 distinct stations serve the A and are ADA compliant
+
+The dimensions of the final dataset is `r dim(tidy_nyc_subway_data)`.
 
 #Problem 2 Mr. Trash Wheel
 
@@ -147,7 +151,9 @@ The median number of sports balls in a dumpster in 2016 was `r median(trash_data
 
 #Problem 3
 
+Load the data from the source.
 ```{r loading the data}
+
 install.packages("devtools")
 devtools::install_github("p8105/p8105.datasets")
 
@@ -159,10 +165,16 @@ library(tidyverse)
 
 ```
 
+Data is first cleaned and filtered
+
 ```{r clean and format the data}
 brfss_smart2010_clean = janitor::clean_names(brfss_smart2010) %>% 
   filter(topic == "Overall Health")
+```
 
+Desired variables are selected, response variable is spread out and proportion variable is created to represent the proportion of Excellent/Good responses.
+
+```{r select and create variables}
 brfss_smart2010_clean = select(brfss_smart2010_clean, year, locationabbr, locationdesc, response, data_value) %>% spread(key = response, value = data_value) %>% mutate(proportion = Excellent/Good)
 ```
 
@@ -171,22 +183,24 @@ distinct(brfss_smart2010_clean, locationdesc)
 length(unique(brfss_smart2010_clean$locationabbr))
 tail(names(sort(table(brfss_smart2010_clean$locationabbr))),1)
 
-brfss_smart2010_clean
+brfss_smart2010_clean_median = filter(brfss_smart2010_clean, year == 2002)
 
-
-precip_2016_2017 = 
-  filter(___, state = (factor(state, levels = 1:50, labels = state.name)))
-match
-mode(state)
-median(exellent)
+median(brfss_smart2010_clean_median$Excellent,na.rm = TRUE)
 ```
 
+There are 404 unique locations in the dataset. Every state and D.C. is represented. The state that is observed the most is NJ. In 2002, the median of the "Excellent" response value is 23.6.
+
 ```{r filter and plots}
+filter(brfss_smart2010_clean, year == 2002) %>% 
+ggplot(aes(x = Excellent)) + geom_histogram()
+```
 
+```{r creating scatter plot data}
+brfss_smart2010_scatter = brfss_smart2010_clean %>%  filter(brfss_smart2010_clean$locationdesc == "NY - New York County" | brfss_smart2010_clean$locationdesc == "NY - Queens County")
+```
 
-ggplot(brfss_smart2010_clean, aes(x = year, y = Excellent)) + geom_histogram()
-
-ggplot(weather_df, aes(x = year, y = excellent)) + 
-  geom_point()
+```{r creating scatterplot}
+ggplot(brfss_smart2010_scatter, aes(x = year, y = Excellent)) + 
+  geom_point(aes(color = locationdesc), alpha = .5)
 ```
 
