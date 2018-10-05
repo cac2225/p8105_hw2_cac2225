@@ -96,10 +96,46 @@ filter(tidy_nyc_subway_date, route_name == "A", ada == "TRUE") %>%
 
 #Problem 2 Mr. Trash Wheel
 
-To load xlsx data, the library package readxl must be loaded. Then read_excel function is executed.
+## Mr. Trash wheel data
+
+To load xlsx data, the library package readxl must be loaded. Then read_excel function is executed. Specify that column names are already included, certain range of data and that data is on the first sheet of the excel file.
 
 ```{r Loading Trash Wheel dataset}
 library(readxl)
 
-trash_data = read_excel("./subdirectory_HW2data/HealthyHarborWaterWheelTotals2018-7-28.xlsx")
+trash_data = read_excel("./subdirectory_HW2data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = 1, col_names = TRUE, range = "A2:N336")
 ```
+
+```{r cleaning up the trash...data names}
+trash_data = 
+  janitor::clean_names(trash_data) %>%  filter(dumpster != "NA") %>% 
+  mutate(sports_balls = round(as.integer(sports_balls)),0)
+ 
+```
+
+Cleaning up the names with the janitor::clean_names function. Removed rows without dumpster-specific data. Variable sports_balls is an integer and rounded to the nearest integer.
+
+## Precipitation data 2016 and 2017
+
+```{r reading 2016 precipitation data}
+precip_2016 = read_excel("./subdirectory_HW2data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = 5, col_names = TRUE, range = "A2:B14")
+
+```
+
+```{r reading 2017 precipitation data}
+precip_2017 = read_excel("./subdirectory_HW2data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = 4, col_names = TRUE, range = "A2:B14")
+```
+
+```{r cleaning precip_2016 and precip_2017}
+precip_2016 = janitor::clean_names(precip_2016) %>% mutate(year = 2016)
+
+precip_2017 = janitor::clean_names(precip_2017) %>% mutate(year = 2017) 
+
+precip_2016_2017 = 
+  full_join(precip_2016, precip_2017)
+       
+precip_2016_2017 = 
+  mutate(precip_2016_2017, month = as.character(factor(month, levels = 1:12, labels = month.name)))
+
+```
+
