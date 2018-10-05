@@ -6,7 +6,7 @@ output: github_document
 ---
 #Problem 1 NYC Transit Data
 
-First step is to save the relevant dataset to the data subdirectory folder, under the working directory. The tidyverse package is loaded. The data is loaded using a relative path to the subdirectory, with the function readr, and given a name, "nyc_subway_data".
+First step is to save the relevant dataset to the data subdirectory folder, under the working directory. The tidyverse and dplry packages are loaded. The data is loaded using a relative path to the subdirectory, with the function readr, and given a name, "nyc_subway_data".
 
 ```{r loading library tidyverse}
 library(tidyverse)
@@ -75,4 +75,31 @@ filter(nyc_subway_data, entry == "True", vending == "NO")
 ```
 69 stations do not have vending and allow entrance. Thus 69/183 stations without vending allow entrance.
 
+```{r create route_name and route_number}
+tidy_nyc_subway_date = gather(nyc_subway_data, key = route_number, value = route_name, route1:route11)
+```
 
+Using gather route variables have been combined into route_number and route_name.
+
+```{r distinct A stations}
+filter(tidy_nyc_subway_date, route_name == "A") %>% distinct(.data = ., station_name, line)
+```
+
+60 subway distinct subway stations serve the A train.
+
+```{r distinct ADA A stations}
+filter(tidy_nyc_subway_date, route_name == "A", ada == "TRUE") %>% 
+  distinct(.data = ., station_name, line)
+```
+
+17 distinct stations serve the A and are ADA compliant
+
+#Problem 2 Mr. Trash Wheel
+
+To load xlsx data, the library package readxl must be loaded. Then read_excel function is executed.
+
+```{r Loading Trash Wheel dataset}
+library(readxl)
+
+trash_data = read_excel(file = "./subdirectory_HW2data/HealthyHarborWaterWheelTotals2018-7-28")
+```
