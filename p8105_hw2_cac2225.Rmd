@@ -179,5 +179,6 @@ brfss_smart2010 =
 ```
 
 ```{r formatting the data}
-
+brfss_smart2010 = janitor::clean_names(brfss_smart2010) %>% 
+  filter(topic == "Overall Health")
 ```
