@@ -138,4 +138,9 @@ precip_2016_2017 =
   mutate(precip_2016_2017, month = as.character(factor(month, levels = 1:12, labels = month.name)))
 
 ```
-
+The number of observations in the final Mr. Trash dataset is `r nrow(trash_data)`.
+The number of observations in the final precip_2016_2017 dataset is `r nrow(precip_2016_2017)`.
+Key variables of the Mr. Trashy Wheel data set would be year, date and weight_tons of trash collected since these tell you about the trends on when the most trash overall was collected.
+Key variables of the final precip_2016_2017 dataset would be year and precipitation since it's important to pinpoint when the most precipitation occurred.
+The total precipitation in 2017 was `r sum(precip_2016_2017$total)`.
+The median number of sports balls in a dumpster in 2016 was `r median(trash_data$sports_balls)`.
